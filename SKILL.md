@@ -59,10 +59,7 @@ Group observations into candidate root-cause categories.
 
 Use the technical design to avoid grouping together failures that look similar on the surface but arise from different system causes.
 
-### Step 5: Organize into a two-level taxonomy
-Create:
-- Level 1 family
-- Level 2 specific error type
+### Step 5: Organize into a taxonomy
 
 Each specific error type should include:
 - definition
@@ -115,7 +112,6 @@ Return output in the following JSON shape:
 {
   "error_taxonomy": [
     {
-      "error_category": "string",
       "error_type": "string",
       "description": "string",
       "priority": "P0 | P1 | P2",
@@ -141,21 +137,17 @@ Return output in the following JSON shape:
 }
 ```
 
-Read these files first before generating the taxonomy.
-
-
 ## Taxonomy Design Principles
 
 Follow these principles:
 
 1. **Build a root-cause-level taxonomy, not a symptom-only taxonomy.**
-2. **Use a two-level taxonomy.**
-3. **Make the taxonomy as MECE as practical.**
-4. **Prefer categories that are actionable and likely to recur.**
-5. **Do not invent artificial precision when the evidence is weak.**
-6. **Include representative examples under each error type.**
-7. **Mark whether each error type is likely in scope for later quantitative evaluation.**
-8. **Explicitly preserve ambiguity when evidence is insufficient.**
+2. **Make the taxonomy as MECE as practical.**
+3. **Prefer categories that are actionable and likely to recur.**
+4. **Do not invent artificial precision when the evidence is weak.**
+5. **Include representative examples under each error type.**
+6. **Mark whether each error type is likely in scope for later quantitative evaluation.**
+7. **Explicitly preserve ambiguity when evidence is insufficient.**
 
 
 ## Taxonomy Quality Checks
@@ -179,8 +171,6 @@ Do not mix:
 - root causes
 - symptoms
 - business outcomes
-
-in the same taxonomy level.
 
 ### 5) Categories unsupported by evidence
 Do not invent confident categories that are not grounded in:
