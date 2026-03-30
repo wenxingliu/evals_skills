@@ -1,0 +1,149 @@
+{
+  "error_taxonomy": [
+    {
+      "error_type": "retrieval_query_disambiguation_failure",
+      "description": "The retrieval pipeline fails to disambiguate overloaded chemistry terms or abbreviations, returning documents from the wrong domain or intent and steering the response off topic.",
+      "priority": "P1",
+      "examples": [
+        "User asked about an ICE table, but retrieval returned an In Case of Emergency document and the model incorporated irrelevant safety content."
+      ],
+      "likely_system_area": "Retrieval pipeline / vector search",
+      "in_scope_for_quantitative_eval": true
+    },
+    {
+      "error_type": "problem_context_grounding_failure",
+      "description": "The response uses knowledge that is broadly relevant to chemistry but is not grounded to the specific conditions of the user's problem, such as phase, setup, or constraints.",
+      "priority": "P1",
+      "examples": [
+        "The model explained ICE tables correctly but used a gas-phase example when the student's question was about an aqueous solution."
+      ],
+      "likely_system_area": "Retrieval-to-generation grounding",
+      "in_scope_for_quantitative_eval": true
+    },
+    {
+      "error_type": "academic_integrity_multi_turn_bypass",
+      "description": "Guardrails do not remain effective across multiple turns, allowing a user to progress from a permitted tutoring interaction into a prohibited direct-answer outcome.",
+      "priority": "P0",
+      "examples": [
+        "After initially giving a hint for a homework problem, the model provided the full solution after a follow-up request."
+      ],
+      "likely_system_area": "Guardrails / conversation policy orchestration",
+      "in_scope_for_quantitative_eval": true
+    },
+    {
+      "error_type": "solution_verification_accuracy_failure",
+      "description": "The tutor incorrectly validates or critiques a student's answer, especially when it should detect chemistry or stoichiometry mistakes before confirming correctness.",
+      "priority": "P0",
+      "examples": [
+        "The model told a student their stoichiometry answer was correct even though the reasoning was wrong."
+      ],
+      "likely_system_area": "LLM generation / grounded answer verification",
+      "in_scope_for_quantitative_eval": true
+    },
+    {
+      "error_type": "instructional_scaffolding_omission",
+      "description": "The tutor skips necessary intermediate reasoning or algebra steps, preventing the student from following how the answer was derived.",
+      "priority": "P1",
+      "examples": [
+        "For a multi-step equilibrium problem, the model jumped from setup to the final expression without showing a key algebra step."
+      ],
+      "likely_system_area": "LLM response planning",
+      "in_scope_for_quantitative_eval": true
+    },
+    {
+      "error_type": "pedagogical_level_mismatch",
+      "description": "The tutor gives explanations that are too abstract, too jargon-heavy, or missing concrete examples for the student's apparent level, reducing instructional usefulness even when the chemistry is correct.",
+      "priority": "P1",
+      "examples": [
+        "The Le Chatelier's principle explanation was correct but too abstract and lacked a concrete example.",
+        "A basic concept answer used terms like thermodynamic spontaneity and Gibbs free energy without explaining them."
+      ],
+      "likely_system_area": "Adaptive response generation",
+      "in_scope_for_quantitative_eval": true
+    },
+    {
+      "error_type": "confusion_adaptation_failure",
+      "description": "The system does not detect or respond appropriately to sustained learner confusion in multi-turn dialogue, instead repeating similar explanations without changing strategy.",
+      "priority": "P1",
+      "examples": [
+        "After six or more turns of clarification requests, the model kept rephrasing the same explanation without adapting."
+      ],
+      "likely_system_area": "Conversation memory / tutoring strategy orchestration",
+      "in_scope_for_quantitative_eval": true
+    },
+    {
+      "error_type": "safety_hazard_detection_failure",
+      "description": "The tutor fails to recognize or block lab-related safety risks, giving an answer where it should warn, refuse, or redirect.",
+      "priority": "P0",
+      "examples": [
+        "When asked about mixing two chemicals in a lab scenario, the model answered generally and did not flag the potential hazard."
+      ],
+      "likely_system_area": "Input/output guardrails",
+      "in_scope_for_quantitative_eval": true
+    },
+    {
+      "error_type": "scope_boundary_enforcement_failure",
+      "description": "The system answers questions outside the defined chemistry tutor scope instead of refusing, redirecting, or escalating.",
+      "priority": "P0",
+      "examples": [
+        "The model attempted to answer a question about the medical effect of a compound instead of redirecting."
+      ],
+      "likely_system_area": "Scope policy / guardrails",
+      "in_scope_for_quantitative_eval": true
+    }
+  ],
+  "taxonomy_coverage_notes": [
+    {
+      "area": "core product behavior risks",
+      "status": "covered",
+      "notes": "The taxonomy covers major tutoring risks in explanation quality, reasoning correctness, solution validation, and multi-turn adaptation."
+    },
+    {
+      "area": "safety / guardrail risks",
+      "status": "covered",
+      "notes": "The taxonomy includes academic integrity bypass, lab-safety misses, and off-scope answering, which align with the PRD's main safety constraints."
+    },
+    {
+      "area": "architecture-specific failure modes",
+      "status": "covered",
+      "notes": "RAG-specific failures are represented through retrieval disambiguation and grounding failures, and conversation-layer failures are represented through confusion adaptation issues."
+    },
+    {
+      "area": "important out-of-scope or refusal failures",
+      "status": "covered",
+      "notes": "The scope boundary enforcement category captures refusal and redirection failures for unsupported requests."
+    },
+    {
+      "area": "known high-risk use cases",
+      "status": "partially_covered",
+      "notes": "Concept explanation, step-by-step problem solving, answer validation, safety-sensitive lab questions, and out-of-scope requests are covered. Study-support quiz behavior and explicit escalation-to-TA behavior are not evidenced in the notes."
+    },
+    {
+      "area": "launch-critical but sparsely evidenced areas",
+      "status": "not_covered",
+      "notes": "There is not enough evidence in the notes to define taxonomy categories for privacy/FERPA handling, logging issues, or failure to trigger human escalation under low confidence."
+    }
+  ],
+  "unresolved_or_ambiguous_areas": [
+    {
+      "issue": "Cause of the gas-phase versus aqueous mismatch",
+      "why_ambiguous": "The note supports a context mismatch but does not clearly separate whether the failure came from retrieval selection, prompt construction, or generation ignoring problem details.",
+      "recommended_next_step": "Review retrieval traces and the final prompt/context package for similar cases before splitting this into finer-grained categories."
+    },
+    {
+      "issue": "Cause of incorrect validation of student work",
+      "why_ambiguous": "The stoichiometry confirmation failure could come from weak chemistry reasoning, lack of grounded checking against source material, or an overconfident validation pattern.",
+      "recommended_next_step": "Collect additional answer-validation examples and compare model outputs with retrieved evidence to determine whether this should remain one category or split into reasoning versus verification failures."
+    },
+    {
+      "issue": "Boundary between pedagogical level mismatch and confusion adaptation failure",
+      "why_ambiguous": "Some failures may start as poor level-setting and only appear later as repeated confusion, so the current split is actionable but not fully proven to be distinct in all cases.",
+      "recommended_next_step": "Tag future multi-turn examples with both initial explanation quality and later adaptation behavior to see whether they separate cleanly."
+    },
+    {
+      "issue": "Missing evidence for escalation, privacy, and quiz-mode failures",
+      "why_ambiguous": "These are launch-relevant areas in the PRD, but the qualitative notes do not contain enough examples to justify rooted categories.",
+      "recommended_next_step": "Add targeted review scenarios for low-confidence escalation, anonymized logging/privacy handling, and interactive quiz behavior before extending the taxonomy."
+    }
+  ]
+}
